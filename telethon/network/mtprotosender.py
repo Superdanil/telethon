@@ -89,7 +89,6 @@ class MTProtoSender:
 
         # Responses must be acknowledged, and we can also batch these.
         self._pending_ack = set()
-        print("len(self._pending_ack) =", len(self._pending_ack))
 
         # Similar to pending_messages but only for the last acknowledges.
         # These can't go in pending_messages because no acknowledge for them
@@ -459,6 +458,7 @@ class MTProtoSender:
         """
         while self._user_connected and not self._reconnecting:
             if self._pending_ack:
+                print("len(self._pending_ack) =", len(self._pending_ack))
                 ack = RequestState(MsgsAck(list(self._pending_ack)))
                 self._send_queue.append(ack)
                 self._last_acks.append(ack)
