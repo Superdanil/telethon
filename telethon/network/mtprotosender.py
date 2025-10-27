@@ -89,6 +89,7 @@ class MTProtoSender:
 
         # Responses must be acknowledged, and we can also batch these.
         self._pending_ack = set()
+        print("len(self._pending_ack) =", len(self._pending_ack))
 
         # Similar to pending_messages but only for the last acknowledges.
         # These can't go in pending_messages because no acknowledge for them
@@ -574,7 +575,7 @@ class MTProtoSender:
         self._pending_ack.add(message.msg_id)
         handler = self._handlers.get(message.obj.CONSTRUCTOR_ID,
                                      self._handle_update)
-        print("handler =", handler)
+        # print("handler =", handler)
         await handler(message)
 
     def _pop_states(self, msg_id):
