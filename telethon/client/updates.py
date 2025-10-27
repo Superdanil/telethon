@@ -250,6 +250,8 @@ class UpdateMethods:
                 await client.catch_up()
         """
         await self._updates_queue.put(types.UpdatesTooLong())
+        print("self._updates_queue.qsize() =", self._updates_queue.qsize())
+
 
     # endregion
 
@@ -452,6 +454,8 @@ class UpdateMethods:
                     # Don't bother sleeping and timing out if the delay is already 0 (pollutes the logs).
                     try:
                         updates = await asyncio.wait_for(self._updates_queue.get(), deadline_delay)
+                        print("self._updates_queue.qsize() =", self._updates_queue.qsize())
+
                     except asyncio.TimeoutError:
                         self._log[__name__].debug('Timeout waiting for updates expired')
                         continue
