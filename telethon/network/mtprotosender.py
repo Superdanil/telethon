@@ -460,7 +460,6 @@ class MTProtoSender:
             if self._pending_ack:
                 ack = RequestState(MsgsAck(list(self._pending_ack)))
                 self._send_queue.append(ack)
-                print("len(self._send_queue) =", len(self._send_queue))
                 self._last_acks.append(ack)
                 self._pending_ack.clear()
 
@@ -575,7 +574,6 @@ class MTProtoSender:
         self._pending_ack.add(message.msg_id)
         handler = self._handlers.get(message.obj.CONSTRUCTOR_ID,
                                      self._handle_update)
-        # print("handler =", handler)
         await handler(message)
 
     def _pop_states(self, msg_id):
