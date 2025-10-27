@@ -574,6 +574,7 @@ class MTProtoSender:
         self._pending_ack.add(message.msg_id)
         handler = self._handlers.get(message.obj.CONSTRUCTOR_ID,
                                      self._handle_update)
+        print("handler =", handler)
         await handler(message)
 
     def _pop_states(self, msg_id):
@@ -688,7 +689,6 @@ class MTProtoSender:
 
         self._log.debug('Handling update %s', message.obj.__class__.__name__)
         self._updates_queue.put_nowait(message.obj)
-        print("self._updates_queue.qsize() =", self._updates_queue.qsize())
 
     def _store_own_updates(self, obj, *, _update_ids=frozenset((
         _tl.UpdateShortMessage.CONSTRUCTOR_ID,
@@ -706,7 +706,6 @@ class MTProtoSender:
             if obj.CONSTRUCTOR_ID in _update_ids:
                 obj._self_outgoing = True  # flag to only process, but not dispatch these
                 self._updates_queue.put_nowait(obj)
-                print("self._updates_queue.qsize() =", self._updates_queue.qsize())
 
             elif obj.CONSTRUCTOR_ID in _update_like_ids:
                 # Ugly "hack" (?) - otherwise bots reliably detect gaps when deleting messages.
@@ -724,13 +723,10 @@ class MTProtoSender:
                 )
                 upd._self_outgoing = True
                 self._updates_queue.put_nowait(upd)
-                print("self._updates_queue.qsize() =", self._updates_queue.qsize())
 
             elif obj.CONSTRUCTOR_ID == _tl.messages.InvitedUsers.CONSTRUCTOR_ID:
                 obj.updates._self_outgoing = True
                 self._updates_queue.put_nowait(obj.updates)
-                print("self._updates_queue.qsize() =", self._updates_queue.qsize())
-
 
         except AttributeError:
             pass
